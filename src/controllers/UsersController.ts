@@ -4,10 +4,10 @@ import { validate } from "class-validator";
 
 import { User } from "../entity/User";
 
-class UserController {
+class UsersController {
   static listAll = async (req: Request, res: Response) => {
-    const userRepository = getRepository(User);
-    const users = await userRepository.find({
+    const usersRepository = getRepository(User);
+    const users = await usersRepository.find({
       select: ["id", "username", "role"]
     });
 
@@ -17,9 +17,9 @@ class UserController {
   static getOneById = async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    const userRepository = getRepository(User);
+    const usersRepository = getRepository(User);
     try {
-      const user = await userRepository.findOneOrFail(id, {
+      const user = await usersRepository.findOneOrFail(id, {
         select: ["id", "username", "role"]
       });
 
@@ -44,9 +44,9 @@ class UserController {
     }
     user.hashPassword();
 
-    const userRepository = getRepository(User);
+    const usersRepository = getRepository(User);
     try {
-      await userRepository.save(user);
+      await usersRepository.save(user);
     } catch (e) {
       res.status(409).send("username already in use");
       return;
@@ -59,10 +59,10 @@ class UserController {
     const { id } = req.params;
     const { username, role } = req.body;
 
-    const userRepository = getRepository(User);
+    const usersRepository = getRepository(User);
     let user;
     try {
-      user = await userRepository.findOneOrFail(id);
+      user = await usersRepository.findOneOrFail(id);
     } catch (error) {
       res.status(404).send("User not found");
       return;
@@ -77,7 +77,7 @@ class UserController {
     }
 
     try {
-      await userRepository.save(user);
+      await usersRepository.save(user);
     } catch (e) {
       res.status(409).send("username already in use");
       return;
@@ -88,18 +88,18 @@ class UserController {
   static deleteUser = async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    const userRepository = getRepository(User);
+    const usersRepository = getRepository(User);
     let user: User;
     try {
-      user = await userRepository.findOneOrFail(id);
+      user = await usersRepository.findOneOrFail(id);
     } catch (error) {
       res.status(404).send("User not found");
       return;
     }
-    userRepository.delete(id);
+    usersRepository.delete(id);
 
     res.status(204).send(user);
   };
 }
 
-export default UserController;
+export default UsersController;

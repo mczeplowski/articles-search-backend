@@ -27,12 +27,12 @@ class AuthController {
     }
 
     const token = jwt.sign(
-      { userId: user.id, username: user.username },
+      { userId: user.id, username: user.username, role: user.role },
       config.jwtSecret,
       { expiresIn: "1h" }
     );
 
-    res.send(token);
+    res.send({ token });
   };
 
   static changePassword = async (req: Request, res: Response) => {
